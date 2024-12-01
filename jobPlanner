@@ -20,8 +20,9 @@
 
     <script>
         class Task {
-            constructor(title) {
+            constructor(title, description) {
                 this.title = title;
+                this.description = description;
                 this.completed = false;
             }
         }
@@ -33,7 +34,10 @@
 
             // Add a task to the queue (end of the array)
             addTask(title) {
-                const newTask = new Task(title);
+                const description = prompt("Enter task description:");
+                if (description === null) return; // Cancel task if description is not provided
+
+                const newTask = new Task(title, description);
                 this.tasks.push(newTask);
                 this.displayTasks();
             }
@@ -61,11 +65,15 @@
 
                 this.tasks.forEach((task, index) => {
                     const taskItem = document.createElement("li");
-                    taskItem.textContent = task.title;
+                    taskItem.textContent = `${task.title}: ${task.description}`;
                     
-                    // Add "Completed" label if the task is completed
+                    // If the task is completed, show only the delete button
                     if (task.completed) {
                         taskItem.textContent += " (Completed)";
+                        const deleteButton = document.createElement("button");
+                        deleteButton.textContent = "Delete";
+                        deleteButton.onclick = () => this.deleteTask(index);
+                        taskItem.appendChild(deleteButton);
                     } else {
                         const completeButton = document.createElement("button");
                         completeButton.textContent = "Mark as Completed";
