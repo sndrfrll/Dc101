@@ -3,120 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Planner</title>
+    <title>Queue-Based Task Planner</title>
 </head>
 <body>
-    <h2>Job Planner</h2>
-
-    <!-- Form for adding a task -->
+    <h1>Task Planner</h1>
     <div>
-        <label for="title">Job Title:</label><br>
-        <input type="text" id="title" placeholder="Enter job title"><br><br>
-
-        <label for="description">Job Description:</label><br>
-        <textarea id="description" placeholder="Enter job description"></textarea><br><br>
-
-        <label for="deadline">Deadline (YYYY-MM-DD):</label><br>
-        <input type="date" id="deadline"><br><br>
-
+        <label for="taskInput">Enter Task: </label>
+        <input type="text" id="taskInput" placeholder="Enter task here">
         <button onclick="addTask()">Add Task</button>
     </div>
 
-    <hr>
-
-    <!-- Area to display tasks -->
-    <h3>Task List</h3>
-    <ul id="taskList"></ul>
+    <h2>Tasks:</h2>
+    <ul id="taskList">
+        <!-- Tasks will be displayed here -->
+    </ul>
 
     <script>
         class Task {
-            constructor(title, description, deadline) {
+            constructor(title) {
                 this.title = title;
-                this.description = description;
-                this.deadline = deadline;
                 this.completed = false;
             }
         }
 
         class WorkerPlanner {
             constructor() {
-                this.tasks = [];
+                this.tasks = []; // A queue to hold tasks
             }
 
-            addTask(title, description, deadline) {
-                if (title && description && deadline) {
-                    this.tasks.push(new Task(title, description, deadline));
+            // Add a task to the queue (end of the array)
+            addTask(title) {
+                const newTask = new Task(title);
+                this.tasks.push(newTask);
+                this.displayTasks();
+            }
+
+            // Mark task as completed
+            markCompleted(index) {
+                if (index >= 0 && index < this.tasks.length) {
+                    this.tasks[index].completed = true;
                     this.displayTasks();
-                    console.log("Task added!"); // Use console.log instead of alert
-                } else {
-                    console.log("Please fill in all fields."); // Use console.log instead of alert
                 }
             }
 
+            // Remove a task from the front of the queue (FIFO)
+            deleteTask(index) {
+                if (index >= 0 && index < this.tasks.length) {
+                    this.tasks.splice(index, 1); // Removes the task at the specified index
+                    this.displayTasks();
+                }
+            }
+
+            // Display tasks
             displayTasks() {
                 const taskList = document.getElementById("taskList");
-                taskList.innerHTML = ''; // Clear the current list
-
-                if (this.tasks.length === 0) {
-                    taskList.innerHTML = '<li>No tasks available.</li>';
-                    return;
-                }
+                taskList.innerHTML = ""; // Clear the list first
 
                 this.tasks.forEach((task, index) => {
                     const taskItem = document.createElement("li");
-                    taskItem.innerHTML = `
-                        <span style="text-decoration: ${task.completed ? 'line-through' : 'none'};">
-                            ${task.title} - ${task.description} (Deadline: ${task.deadline})
-                        </span>
-                        ${task.completed ? '<span> (Completed)</span>' : ''}
-                        <button onclick="markCompleted(${index})">Mark Completed</button> 
-                        <button onclick="deleteTask(${index})">Delete</button>
-                    `;
+                    taskItem.textContent = task.title;
+                    
+                    // Add "Completed" label if the task is completed
+                    if (task.completed) {
+                        taskItem.textContent += " (Completed)";
+                    } else {
+                        const completeButton = document.createElement("button");
+                        completeButton.textContent = "Mark as Completed";
+                        completeButton.onclick = () => this.markCompleted(index);
+
+                        const deleteButton = document.createElement("button");
+                        deleteButton.textContent = "Delete";
+                        deleteButton.onclick = () => this.deleteTask(index);
+
+                        taskItem.appendChild(completeButton);
+                        taskItem.appendChild(deleteButton);
+                    }
+
                     taskList.appendChild(taskItem);
                 });
             }
-
-            markCompleted(index) {
-                this.tasks[index].completed = true;
-                console.log("Task marked as completed!"); // Use console.log instead of alert
-                this.displayTasks();
-            }
-
-            deleteTask(index) {
-                this.tasks.splice(index, 1);
-                console.log("Task deleted!"); // Use console.log instead of alert
-                this.displayTasks();
-            }
         }
 
-        // Global instance of WorkerPlanner
         const planner = new WorkerPlanner();
 
+        // Add task function
         function addTask() {
-            const title = document.getElementById("title").value;
-            const description = document.getElementById("description").value;
-            const deadline = document.getElementById("deadline").value;
+            const taskInput = document.getElementById("taskInput");
+            const taskTitle = taskInput.value.trim();
 
-            planner.addTask(title, description, deadline);
-
-            // Clear the input fields after adding the task
-            document.getElementById("title").value = '';
-            document.getElementById("description").value = '';
-            document.getElementById("deadline").value = '';
+            if (taskTitle) {
+                planner.addTask(taskTitle);
+                taskInput.value = ""; // Clear the input field after adding
+            } else {
+                alert("Please enter a task.");
+            }
         }
 
-        // Display tasks on page load
-        window.onload = () => planner.displayTasks();
-
-        // Mark the task as completed
-        function markCompleted(index) {
-            planner.markCompleted(index);
-        }
-
-        // Delete the task
-        function deleteTask(index) {
-            planner.deleteTask(index);
-        }
+        // Initialize with some tasks
+        planner.addTask("Finish the project report");
+        planner.addTask("Review team code submissions");
     </script>
 </body>
 </html>
