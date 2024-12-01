@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue-Based Job Task Planner</title>
+</head>
+<body>
+    <h1>Job Task Planner</h1>
+    
+    <div>
+        <label for="jobTitleInput">Enter Job Title: </label>
+        <input type="text" id="jobTitleInput" placeholder="Enter job title here">
+        <button onclick="addJob()">Add Job</button>
+    </div>
+
+    <h2>Jobs:</h2>
+    <ul id="jobList">
+        <!-- Job folders will be displayed here -->
+    </ul>
+
+    <script>
+        class Task {
+            constructor(title) {
+                this.title = title;
+                this.completed = false;
+            }
+        }
+
+        class Job {
+            constructor(title) {
+                this.title = title;
+                this.tasks = []; // Queue to hold tasks for this job
+            }
+
+            // Add a task to the job (queue system)
+            addTask(taskTitle) {
+                const newTask = new Task(taskTitle);
+                this.tasks.push(newTask);
+                this.displayTasks();
+            }
+
+            // Mark task as completed
+            markCompleted(index) {
+                if (index >= 0 && index < this.tasks.length) {
+                    // Only allow completion of the current task if the previous task is done
+                    if (index === 0 || this.tasks[index - 1].completed) {
+                        this.tasks[index].completed = true;
+                        this.displayTasks();
+                    } else {
+                        alert("Please complete the previous task first.");
+                    }
+                }
+            }
+
+            // Remove a task from the job's queue (FIFO)
+            deleteTask(index) {
+                if (index >= 0 && index < this.tasks.length) {
+                    this.tasks.splice(index, 1); // Removes the task at the specified index
+                    this.displayTasks();
+                }
+            }
+
+            // Display tasks for this job
+            displayTasks() {
+                const taskList = document.getElementById("taskList");
+                const jobItem = document.getElementById(this.title);
+
+                // Clear current task display
+                jobItem.querySelector(".taskList").innerHTML = "";
+
+                this.tasks.forEach((task, index) => {
+                    const taskItem = document.createElement("li");
+                    taskItem.textContent = task.title;
+                    
+                    // Add "Completed" label if the task is completed
+                    if (task.completed) {
+                        taskItem.textContent += " (Completed)";
+                    } else {
+                        const completeButton = document.createElement("button");
+                        completeButton.textContent = "Mark as Completed";
+                        completeButton.onclick = () => this.markCompleted(index);
+
+                        const deleteButton = document.createElement("button");
+                        deleteButton.textContent = "Delete";
+                        deleteButton.onclick = () => this.deleteTask(index);
+
+                        taskItem.appendChild(completeButton);
+                        taskItem.appendChild(deleteButton);
+                    }
+
+                    jobItem.querySelector(".taskList").appendChild(taskItem);
+                });
+            }
+        }
+
+        // Store all jobs
+        const jobs = [];
+
+        // Add a new job folder
+        function addJob() {
+            const jobInput = document.getElementById("jobTitleInput");
+            const jobTitle = jobInput.value.trim();
+
+            if (jobTitle) {
+                const newJob = new Job(jobTitle);
+                jobs.push(newJob);
+                displayJobs();
+                jobInput.value = ""; // Clear the input field after adding
+            } else {
+                alert("Please enter a job title.");
+            }
+        }
+
+        // Display all jobs
+        function displayJobs() {
+            const jobList = document.getElementById("jobList");
+            jobList.innerHTML = ""; // Clear the list first
+
+            jobs.forEach(job => {
+                const jobItem = document.createElement("li");
+                jobItem.id = job.title; // Unique ID for each job
+                jobItem.textContent = job.title;
+                
+                // Add task input and add button for each job
+                const taskInput = document.createElement("input");
+                taskInput.type = "text";
+                taskInput.placeholder = "Enter task for " + job.title;
+                const addTaskButton = document.createElement("button");
+                addTaskButton.textContent = "Add Task";
+                addTaskButton.onclick = () => addTaskToJob(job);
+
+                // Append task input and add button to job
+                jobItem.appendChild(taskInput);
+                jobItem.appendChild(addTaskButton);
+
+                // Add task list container for this job
+                const taskList = document.createElement("ul");
+                taskList.classList.add("taskList");
+                jobItem.appendChild(taskList);
+
+                // Append job item to the main list
+                jobList.appendChild(jobItem);
+
+                // Display tasks for the job
+                job.displayTasks();
+            });
+        }
+
+        // Add a task to a specific job
+        function addTaskToJob(job) {
+            const taskInput = event.target.previousElementSibling; // Get the task input element
+            const taskTitle = taskInput.value.trim();
+
+            if (taskTitle) {
+                job.addTask(taskTitle);
+                taskInput.value = ""; // Clear the input field after adding
+            } else {
+                alert("Please enter a task.");
+            }
+        }
+    </script>
+</body>
+</html>
