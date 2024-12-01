@@ -110,16 +110,16 @@
             }
         }
 
-        // Delete a job
-        function deleteJob(jobIndex) {
-            if (jobIndex >= 0 && jobIndex < jobs.length) {
+        // Display all jobs
+        function displayJobs() {
+            // Delete a job
+               function deleteJob(jobIndex) {
+               if (jobIndex >= 0 && jobIndex < jobs.length) {
                 jobs.splice(jobIndex, 1);
                 displayJobs();
             }
         }
 
-        // Display all jobs
-        function displayJobs() {
             const jobList = document.getElementById("jobList");
             jobList.innerHTML = ""; 
 
