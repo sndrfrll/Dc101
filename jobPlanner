@@ -20,9 +20,8 @@
 
     <script>
         class Task {
-            constructor(title, description) {
+            constructor(title) {
                 this.title = title;
-                this.description = description;
                 this.completed = false;
             }
         }
@@ -34,10 +33,7 @@
 
             // Add a task to the queue (end of the array)
             addTask(title) {
-                const description = prompt("Enter task description:");
-                if (description === null) return; // Cancel task if description is not provided
-
-                const newTask = new Task(title, description);
+                const newTask = new Task(title);
                 this.tasks.push(newTask);
                 this.displayTasks();
             }
@@ -45,8 +41,13 @@
             // Mark task as completed
             markCompleted(index) {
                 if (index >= 0 && index < this.tasks.length) {
-                    this.tasks[index].completed = true;
-                    this.displayTasks();
+                    // Only allow completion of the current task if the previous task is done
+                    if (index === 0 || this.tasks[index - 1].completed) {
+                        this.tasks[index].completed = true;
+                        this.displayTasks();
+                    } else {
+                        alert("Please complete the previous task first.");
+                    }
                 }
             }
 
@@ -65,15 +66,11 @@
 
                 this.tasks.forEach((task, index) => {
                     const taskItem = document.createElement("li");
-                    taskItem.textContent = `${task.title}: ${task.description}`;
+                    taskItem.textContent = task.title;
                     
-                    // If the task is completed, show only the delete button
+                    // Add "Completed" label if the task is completed
                     if (task.completed) {
                         taskItem.textContent += " (Completed)";
-                        const deleteButton = document.createElement("button");
-                        deleteButton.textContent = "Delete";
-                        deleteButton.onclick = () => this.deleteTask(index);
-                        taskItem.appendChild(deleteButton);
                     } else {
                         const completeButton = document.createElement("button");
                         completeButton.textContent = "Mark as Completed";
@@ -106,10 +103,6 @@
                 alert("Please enter a task.");
             }
         }
-
-        // Initialize with some tasks
-        planner.addTask("Finish the project report");
-        planner.addTask("Review team code submissions");
     </script>
 </body>
 </html>
