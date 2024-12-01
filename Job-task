@@ -43,14 +43,10 @@
             // Mark task as completed and move it to the end of the queue
             markCompleted(index) {
                 if (index >= 0 && index < this.tasks.length) {
-                    // Only allow completion of the current task if the previous task is done
                     if (index === 0 || this.tasks[index - 1].completed) {
                         this.tasks[index].completed = true;
-
-                        // Move the completed task to the end of the queue
                         const completedTask = this.tasks.splice(index, 1)[0];
                         this.tasks.push(completedTask);
-
                         this.displayTasks();
                     } else {
                         alert("Please complete the previous task first.");
@@ -61,29 +57,25 @@
             // Remove a task from the job's queue
             deleteTask(index) {
                 if (index >= 0 && index < this.tasks.length) {
-                    this.tasks.splice(index, 1); // Removes the task at the specified index
+                    this.tasks.splice(index, 1); 
                     this.displayTasks();
                 }
             }
 
             // Display tasks for this job
             displayTasks() {
-                const taskList = document.getElementById("taskList");
                 const jobItem = document.getElementById(this.title);
-
-                // Clear current task display
-                jobItem.querySelector(".taskList").innerHTML = "";
+                const taskList = jobItem.querySelector(".taskList");
+                taskList.innerHTML = ""; 
 
                 this.tasks.forEach((task, index) => {
                     const taskItem = document.createElement("li");
                     taskItem.textContent = task.title;
                     
-                    // Add "Completed" label if the task is completed
                     if (task.completed) {
                         taskItem.textContent += " (Completed)";
                     }
-                    
-                    // Add "Mark as Completed" button only if task is not yet completed
+
                     if (!task.completed) {
                         const completeButton = document.createElement("button");
                         completeButton.textContent = "Mark as Completed";
@@ -91,21 +83,19 @@
                         taskItem.appendChild(completeButton);
                     }
 
-                    // Add "Delete" button to all tasks, regardless of completion status
                     const deleteButton = document.createElement("button");
                     deleteButton.textContent = "Delete";
                     deleteButton.onclick = () => this.deleteTask(index);
                     taskItem.appendChild(deleteButton);
 
-                    jobItem.querySelector(".taskList").appendChild(taskItem);
+                    taskList.appendChild(taskItem);
                 });
             }
         }
 
-        // Store all jobs
         const jobs = [];
 
-        // Add a new job folder
+        // Add a new job
         function addJob() {
             const jobInput = document.getElementById("jobTitleInput");
             const jobTitle = jobInput.value.trim();
@@ -114,55 +104,63 @@
                 const newJob = new Job(jobTitle);
                 jobs.push(newJob);
                 displayJobs();
-                jobInput.value = ""; // Clear the input field after adding
+                jobInput.value = "";
             } else {
                 alert("Please enter a job title.");
+            }
+        }
+
+        // Delete a job
+        function deleteJob(jobIndex) {
+            if (jobIndex >= 0 && jobIndex < jobs.length) {
+                jobs.splice(jobIndex, 1);
+                displayJobs();
             }
         }
 
         // Display all jobs
         function displayJobs() {
             const jobList = document.getElementById("jobList");
-            jobList.innerHTML = ""; // Clear the list first
+            jobList.innerHTML = ""; 
 
-            jobs.forEach(job => {
+            jobs.forEach((job, index) => {
                 const jobItem = document.createElement("li");
-                jobItem.id = job.title; // Unique ID for each job
+                jobItem.id = job.title; 
                 jobItem.textContent = job.title;
                 
-                // Add task input and add button for each job
+                const deleteJobButton = document.createElement("button");
+                deleteJobButton.textContent = "Delete Job";
+                deleteJobButton.onclick = () => deleteJob(index);
+                jobItem.appendChild(deleteJobButton);
+
                 const taskInput = document.createElement("input");
                 taskInput.type = "text";
                 taskInput.placeholder = "Enter task for " + job.title;
+
                 const addTaskButton = document.createElement("button");
                 addTaskButton.textContent = "Add Task";
                 addTaskButton.onclick = () => addTaskToJob(job);
 
-                // Append task input and add button to job
                 jobItem.appendChild(taskInput);
                 jobItem.appendChild(addTaskButton);
 
-                // Add task list container for this job
                 const taskList = document.createElement("ul");
                 taskList.classList.add("taskList");
                 jobItem.appendChild(taskList);
 
-                // Append job item to the main list
                 jobList.appendChild(jobItem);
 
-                // Display tasks for the job
                 job.displayTasks();
             });
         }
 
-        // Add a task to a specific job
         function addTaskToJob(job) {
-            const taskInput = event.target.previousElementSibling; // Get the task input element
+            const taskInput = event.target.previousElementSibling;
             const taskTitle = taskInput.value.trim();
 
             if (taskTitle) {
                 job.addTask(taskTitle);
-                taskInput.value = ""; // Clear the input field after adding
+                taskInput.value = "";
             } else {
                 alert("Please enter a task.");
             }
