@@ -76,18 +76,21 @@
                     // Add "Completed" label if the task is completed
                     if (task.completed) {
                         taskItem.textContent += " (Completed)";
-                    } else {
+                    }
+                    
+                    // Add "Mark as Completed" button only if task is not yet completed
+                    if (!task.completed) {
                         const completeButton = document.createElement("button");
                         completeButton.textContent = "Mark as Completed";
                         completeButton.onclick = () => this.markCompleted(index);
-
-                        const deleteButton = document.createElement("button");
-                        deleteButton.textContent = "Delete";
-                        deleteButton.onclick = () => this.deleteTask(index);
-
                         taskItem.appendChild(completeButton);
-                        taskItem.appendChild(deleteButton);
                     }
+
+                    // Add "Delete" button to all tasks, regardless of completion status
+                    const deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Delete";
+                    deleteButton.onclick = () => this.deleteTask(index);
+                    taskItem.appendChild(deleteButton);
 
                     jobItem.querySelector(".taskList").appendChild(taskItem);
                 });
