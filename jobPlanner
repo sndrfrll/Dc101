@@ -65,7 +65,10 @@
                 this.tasks.forEach((task, index) => {
                     const taskItem = document.createElement("li");
                     taskItem.innerHTML = `
-                        ${task.title} - ${task.description} (Deadline: ${task.deadline}) 
+                        <span style="text-decoration: ${task.completed ? 'line-through' : 'none'};">
+                            ${task.title} - ${task.description} (Deadline: ${task.deadline})
+                        </span>
+                        ${task.completed ? '<span> (Completed)</span>' : ''}
                         <button onclick="markCompleted(${index})">Mark Completed</button> 
                         <button onclick="deleteTask(${index})">Delete</button>
                     `;
