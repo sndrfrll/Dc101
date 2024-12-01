@@ -73,6 +73,7 @@
                     taskItem.textContent = task.title;
                     
                     if (task.completed) {
+                        taskItem.style.textDecoration = "line-through"; // Strike-through completed tasks
                         taskItem.textContent += " (Completed)";
                     }
 
@@ -110,16 +111,16 @@
             }
         }
 
-        // Display all jobs
-        function displayJobs() {
-            // Delete a job
-               function deleteJob(jobIndex) {
-               if (jobIndex >= 0 && jobIndex < jobs.length) {
+        // Delete a job
+        function deleteJob(jobIndex) {
+            if (jobIndex >= 0 && jobIndex < jobs.length) {
                 jobs.splice(jobIndex, 1);
                 displayJobs();
             }
         }
 
+        // Display all jobs
+        function displayJobs() {
             const jobList = document.getElementById("jobList");
             jobList.innerHTML = ""; 
 
@@ -128,11 +129,6 @@
                 jobItem.id = job.title; 
                 jobItem.textContent = job.title;
                 
-                const deleteJobButton = document.createElement("button");
-                deleteJobButton.textContent = "Delete Job";
-                deleteJobButton.onclick = () => deleteJob(index);
-                jobItem.appendChild(deleteJobButton);
-
                 const taskInput = document.createElement("input");
                 taskInput.type = "text";
                 taskInput.placeholder = "Enter task for " + job.title;
@@ -141,8 +137,13 @@
                 addTaskButton.textContent = "Add Task";
                 addTaskButton.onclick = () => addTaskToJob(job);
 
+                const deleteJobButton = document.createElement("button");
+                deleteJobButton.textContent = "Delete Job";
+                deleteJobButton.onclick = () => deleteJob(index);
+
                 jobItem.appendChild(taskInput);
                 jobItem.appendChild(addTaskButton);
+                jobItem.appendChild(deleteJobButton);
 
                 const taskList = document.createElement("ul");
                 taskList.classList.add("taskList");
@@ -155,7 +156,7 @@
         }
 
         function addTaskToJob(job) {
-            const taskInput = event.target.previousElementSibling;
+            const taskInput = event.target.previousElementSibling; // Get the task input element
             const taskTitle = taskInput.value.trim();
 
             if (taskTitle) {
