@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+     <link href="https://fonts.googleapis.com/css2?family=Barlow&family=Poppins&family=Rubik&display=swap" rel="stylesheet">
+
+     <link rel="stylesheet" href="cart.css">
+
+     
+     
+    <title>Cart</title>
+</head>
+<body>
+    <header>
+        <img src="image/logo.png" alt="Lovito" class="logo" style="width:100px;"> 
+
+        <h2>Cart List</h2>
+     </header>
+
+     <section class="cart">
+         <table width="100%">
+             <thead>
+                 <tr>
+                     <td>Remove</td>
+                     <td>Image</td>
+                     <td>Product</td>
+                     <td>Price</td>
+                     <td>Quantity</td>
+                     <td>Subtotal</td>
+                 </tr>
+             </thead>
+
+             <tbody id="cart-items">
+                 <tr>
+                     <td><a href=""><i class="fa-regular fa-circle-xmark"></i></a></td>
+                     <td><img src="" alt=""></td>
+                     <td>product name</td>
+                     <td>unit price</td>
+                     <td><input type="number" value="1"></td>
+                     <td>subtotal</td>
+                 </tr>
+             </tbody>
+         </table>
+     </section>
+
+     <section class="order">
+         <div id="payment">
+             <h3>Order Summary</h3>
+             <table>
+                 <tr>Subtotal
+                     <td id="subtotal-value">&#8369; 0.00</td>
+                 </tr>
+
+                 <tr>
+                     <td><strong>Total</strong></td>
+                     <td id="total-value"><strong>&#8369; 0.00</strong></td>
+                 </tr>
+             </table>
+
+             <button class="orderbtn">Checkout</button>
+         </div>
+     </section>
+    
+    <script src="cart.js"></script>
+</body>
+</html>
