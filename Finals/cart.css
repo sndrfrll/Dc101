@@ -5,7 +5,18 @@
     font-family: "Poppins", serif;
     text-decoration: none;
 }
-
+header{
+  background-color: #f5f5dc;
+  padding: 5px 5px;
+}
+header h2 {
+  margin: 0 10px;
+  font-size: 18px;
+}
+.logo{
+  margin: 5px 10px;
+  width: 70px;
+}
 .cart{
     overflow-x: auto;
     margin: 10px 10px;
