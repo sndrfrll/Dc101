@@ -72,11 +72,6 @@
                     const taskItem = document.createElement("li");
                     taskItem.textContent = task.title;
                     
-                    if (task.completed) {
-                        taskItem.style.textDecoration = "line-through"; // Strike-through completed tasks
-                        taskItem.textContent += " (Completed)";
-                    }
-
                     if (!task.completed) {
                         const completeButton = document.createElement("button");
                         completeButton.textContent = "Mark as Completed";
